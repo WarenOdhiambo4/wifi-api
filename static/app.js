@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMsg.textContent = 'Initiating M-Pesa STK Push prompt...';
 
         try {
-            const response = await fetch('https://n8n.kabisakabisa.store/webhook/customer-select-plan', {
+            const response = await fetch('https://n8n.kabisakabisa.store/webhook-test/customer-select-plan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
