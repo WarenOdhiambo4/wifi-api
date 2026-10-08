@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Access Portal</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="portal-card">
+        <h2>High-Speed 5G Wi-Fi</h2>
+        <p class="subtitle">Select a plan to connect instantly</p>
+
+        <div class="mac-box">
+            Device MAC: <span id="mac-display">Detecting...</span>
+        </div>
+
+        <form id="payment-form">
+            <label for="phone">M-Pesa Phone Number</label>
+            <input type="tel" id="phone" placeholder="0712345678" required>
+
+            <label>Choose Package</label>
+            <div class="plan-options">
+                <button type="button" class="plan-btn active" data-plan="1H">1 Hour - KES 10</button>
+                <button type="button" class="plan-btn" data-plan="24H">24 Hours - KES 50</button>
+            </div>
+
+            <button type="submit" id="pay-btn">Pay with M-Pesa</button>
+        </form>
+
+        <div id="status-message"></div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
