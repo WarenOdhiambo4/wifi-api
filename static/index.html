@@ -3,33 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wi-Fi Access Portal</title>
+    <title>High-Speed 5G Wi-Fi Portal</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="portal-card">
-        <h2>High-Speed 5G Wi-Fi</h2>
-        <p class="subtitle">Select a plan to connect instantly</p>
 
-        <div class="mac-box">
-            Device MAC: <span id="mac-display">Detecting...</span>
+    <!-- HERO SECTION WITH DYNAMIC SLIDER -->
+    <header class="hero-container">
+        <div class="slider-wrapper">
+            <img src="https://res.cloudinary.com/dwemaagtj/image/upload/v1791490615/wifi_5g_ruter_f147di.jpg" alt="5G Router" class="hero-img img-left">
+            <img src="https://res.cloudinary.com/dwemaagtj/image/upload/v1791490597/wifi_s9tmrg.jpg" alt="Wi-Fi Signal" class="hero-img img-right">
         </div>
-
-        <form id="payment-form">
-            <label for="phone">M-Pesa Phone Number</label>
-            <input type="tel" id="phone" placeholder="0712345678" required>
-
-            <label>Choose Package</label>
-            <div class="plan-options">
-                <button type="button" class="plan-btn active" data-plan="1H">1 Hour - KES 10</button>
-                <button type="button" class="plan-btn" data-plan="24H">24 Hours - KES 50</button>
+        <div class="hero-overlay">
+            <h1 class="hero-title">Ultra-Fast 5G Connectivity</h1>
+            <p class="hero-subtitle">Stream, game, and work without limits. Instant setup via M-Pesa.</p>
+            <div class="mac-badge">
+                Detected MAC: <span id="mac-display">Detecting...</span>
             </div>
+        </div>
+    </header>
 
-            <button type="submit" id="pay-btn">Pay with M-Pesa</button>
-        </form>
+    <main class="portal-body">
+        
+        <!-- SECTION 1: INTERNET PACKAGES -->
+        <section class="section-container">
+            <h2 class="section-heading">Choose Your Access Plan</h2>
+            <div class="cards-grid">
+                
+                <div class="plan-card">
+                    <span class="badge">Popular</span>
+                    <h3>1 Hour Pass</h3>
+                    <p class="price">KES 10</p>
+                    <p class="desc">Ideal for quick browsing and social media check-ins.</p>
+                    <button class="select-plan-btn" data-plan="1H" data-price="10">Select Plan</button>
+                </div>
 
-        <div id="status-message"></div>
-    </div>
+                <div class="plan-card featured">
+                    <span class="badge">Best Value</span>
+                    <h3>24 Hour Unlimited</h3>
+                    <p class="price">KES 50</p>
+                    <p class="desc">Non-stop HD streaming and high-speed downloads for full 24h.</p>
+                    <button class="select-plan-btn" data-plan="24H" data-price="50">Select Plan</button>
+                </div>
+
+                <div class="plan-card">
+                    <span class="badge">Weekly</span>
+                    <h3>7 Days Power Pass</h3>
+                    <p class="price">KES 300</p>
+                    <p class="desc">Uninterrupted home or office 5G speeds for a full week.</p>
+                    <button class="select-plan-btn" data-plan="7D" data-price="300">Select Plan</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: MPESA PAYMENT CHECKOUT CARD -->
+        <section class="section-container">
+            <div class="checkout-card">
+                <h3>Complete M-Pesa Payment</h3>
+                <p>Selected Package: <strong id="selected-plan-name">1 Hour Pass (KES 10)</strong></p>
+                
+                <form id="payment-form">
+                    <div class="input-group">
+                        <label for="phone">M-Pesa Phone Number</label>
+                        <input type="tel" id="phone" placeholder="e.g. 0712345678" required>
+                    </div>
+                    <button type="submit" id="pay-btn" class="theme-btn">Pay with M-Pesa</button>
+                </form>
+
+                <div id="status-message"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: FEATURES & NETWORK SPEED HIGHLIGHTS -->
+        <section class="section-container">
+            <h2 class="section-heading">Why Choose Our Network?</h2>
+            <div class="cards-grid">
+                
+                <div class="info-card">
+                    <div class="icon">⚡</div>
+                    <h4>Ultra-Low Latency</h4>
+                    <p>Powered by high-capacity 5G spectrum ensuring minimal lag for video calls and online gaming.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">🔒</div>
+                    <h4>Bank-Grade Security</h4>
+                    <p>Encrypted traffic isolates your device safely from other users on the network.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">📲</div>
+                    <h4>Instant Activation</h4>
+                    <p>Zero wait time. Network firewall rules update immediately after M-Pesa payment confirmation.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER SECTION -->
+    <footer class="portal-footer">
+        <div class="footer-content">
+            <h3>Reliable High-Speed Internet Services</h3>
+            <p class="tagline">"Mastery of selling trust without selling"</p>
+            
+            <div class="footer-links">
+                <p>Helpline / Support: <strong>+254 700 000 000</strong></p>
+                <p>Email: support@kabisakabisa.store</p>
+                <p>24/7 Network Monitoring & Technical Assistance</p>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2026 5G Wi-Fi Network. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
 
     <script src="/static/app.js"></script>
 </body>

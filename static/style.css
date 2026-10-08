@@ -2,110 +2,305 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 body {
-    background: #0f172a;
-    color: #f8fafc;
+    background-color: #f8fafc;
+    color: #333333;
+    line-height: 1.6;
+}
+
+/* HERO SECTION WITH DYNAMIC SLIDER */
+.hero-container {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 380px;
+    overflow: hidden;
+    background: #000;
+}
+
+.slider-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-img {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    object-fit: cover;
+    transition: all 1.2s ease-in-out;
+}
+
+.img-left {
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.img-right {
+    right: -100%;
+    width: 50%;
+    z-index: 2;
+}
+
+/* INITIAL ANIMATION CLASS (Triggered via JavaScript) */
+.slider-wrapper.meet .img-left {
+    width: 50%;
+}
+
+.slider-wrapper.meet .img-right {
+    right: 0%;
+}
+
+.slider-wrapper.full .img-left {
+    width: 100%;
+}
+
+.slider-wrapper.full .img-right {
+    right: -100%;
+    opacity: 0;
+}
+
+/* WHITE TRANSPARENT OVERLAY FOR TEXT READABILITY */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.75);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    text-align: center;
     padding: 20px;
 }
 
-.portal-card {
-    background: #1e293b;
-    padding: 30px;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+.hero-title {
+    color: #cc3333;
+    font-weight: 900;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
-h2 {
-    color: #38bdf8;
-    margin-bottom: 5px;
-    text-align: center;
+.hero-subtitle {
+    color: #cc3333;
+    font-weight: 700;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin-bottom: 15px;
 }
 
-.subtitle {
-    color: #94a3b8;
+.mac-badge {
+    background: rgba(255, 255, 255, 0.9);
+    color: #cc3333;
+    font-weight: 800;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid #cc3333;
     font-size: 0.9rem;
-    margin-bottom: 20px;
-    text-align: center;
 }
 
-.mac-box {
-    background: #334155;
-    padding: 8px 12px;
+/* MAIN BODY & CARDS GRID */
+.portal-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.section-container {
+    margin-bottom: 50px;
+}
+
+.section-heading {
+    color: #cc3333;
+    font-weight: 900;
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* PLAN CARDS (WHITE BACKGROUND, #cc3333 TEXT) */
+.plan-card, .info-card, .checkout-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    position: relative;
+    border: 1px solid #f1f5f9;
+}
+
+.plan-card {
+    color: #cc3333;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.plan-card h3 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.plan-card .price {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+}
+
+.plan-card .desc {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: #cc3333;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+/* BUTTON STYLING (#cc3333 BACKGROUND, WHITE TEXT) */
+.theme-btn, .select-plan-btn {
+    background-color: #cc3333;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
     border-radius: 8px;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    color: #cbd5e1;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.theme-btn:hover, .select-plan-btn:hover {
+    background-color: #b32d2d;
+}
+
+/* CHECKOUT FORM CARD */
+.checkout-card {
+    max-width: 500px;
+    margin: 0 auto;
+    border: 2px solid #cc3333;
+}
+
+.checkout-card h3 {
+    color: #cc3333;
+    font-weight: 900;
+    margin-bottom: 10px;
     text-align: center;
 }
 
-label {
+.checkout-card p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
     display: block;
-    font-size: 0.85rem;
-    color: #cbd5e1;
+    color: #cc3333;
+    font-weight: 800;
     margin-bottom: 8px;
 }
 
-input[type="tel"] {
+.input-group input {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid #475569;
-    background: #0f172a;
-    color: #fff;
+    border: 2px solid #e2e8f0;
     font-size: 1rem;
-    margin-bottom: 20px;
-}
-
-.plan-options {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.plan-btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #475569;
-    background: #0f172a;
-    color: #cbd5e1;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.plan-btn.active {
-    background: #0284c7;
-    border-color: #38bdf8;
-    color: #fff;
-}
-
-#pay-btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 8px;
-    border: none;
-    background: #16a34a;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#pay-btn:disabled {
-    background: #475569;
 }
 
 #status-message {
     margin-top: 15px;
     text-align: center;
+    font-weight: 800;
+}
+
+/* INFO CARDS */
+.info-card {
+    text-align: center;
+}
+
+.info-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.info-card h4 {
+    color: #cc3333;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.info-card p {
     font-size: 0.9rem;
+    color: #475569;
+}
+
+/* FOOTER SECTION (#DD2D4A BACKGROUND, WHITE BOLD TEXT) */
+.portal-footer {
+    background-color: #DD2D4A;
+    color: #ffffff;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.portal-footer h3 {
+    font-weight: 900;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.portal-footer .tagline {
+    font-weight: 800;
+    font-style: italic;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.footer-links p {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.copyright {
+    margin-top: 25px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.9;
 }
