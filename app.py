@@ -1,14 +1,15 @@
 import os
 import requests
+import re
 import psutil
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from netaddr import IPAddress, IPNetwork
+from netaddr import IPAddress
 from scapy.all import ARP, Ether, srp
 
 app = Flask(__name__)
 
-# Allow Vercel frontend requests
+# Enable CORS for Vercel Frontend and n8n Webhooks
 CORS(app, origins=["*"])
 
 AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
@@ -20,23 +21,18 @@ AIRTABLE_HEADERS = {
 
 def resolve_mac_via_arp(ip_address):
     """
-    Uses Scapy and Netaddr to issue an ARP request on the local network interface
-    and retrieve the physical MAC address matching the given IP address.
+    Attempts to issue an ARP request on local network interfaces (if applicable).
     """
     try:
-        # Validate IPv4 format
         ip_obj = IPAddress(ip_address)
-        
-        # Build ARP Request Packet
         arp_request = ARP(pdst=str(ip_obj))
         broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
         arp_packet = broadcast / arp_request
 
-        # Send packet on raw socket with 2s timeout
         answered_list = srp(arp_packet, timeout=2, verbose=False)[0]
 
         for sent_pkt, received_pkt in answered_list:
-            return received_pkt.hwsrc.upper()
+            return received_pkt.hwsrc.upper().replace('-', ':')
     except Exception as err:
         print(f"[ARP DISCOVERY ERROR] {err}")
     return None
@@ -44,26 +40,37 @@ def resolve_mac_via_arp(ip_address):
 
 @app.route('/get-mac', methods=['GET'])
 def get_mac():
-    # 1. Extract Real Client IP from HTTP Headers
+    # 1. Check if MAC address is provided in Query Parameters by Router
+    url_mac = request.args.get('mac') or request.args.get('client_mac') or request.args.get('usermac')
+
+    if url_mac:
+        # Standardize formatting (Uppercase, replace hyphens with colons)
+        normalized_mac = url_mac.strip().upper().replace('-', ':')
+        
+        # Validate MAC format using regex (e.g., FC:3F:FC:AF:92:F0)
+        if re.match(r'^([0-9A-F]{2}:){5}[0-9A-F]{2}$', normalized_mac):
+            return jsonify({
+                "status": "success",
+                "mac_address": normalized_mac
+            }), 200
+
+    # 2. Extract Client IP and attempt local ARP lookup as secondary check
     client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     if client_ip and ',' in client_ip:
         client_ip = client_ip.split(',')[0].strip()
 
-    # Allow query parameter override if passed
-    target_ip = request.args.get('ip', client_ip)
+    resolved_arp_mac = resolve_mac_via_arp(client_ip)
+    if resolved_arp_mac:
+        return jsonify({
+            "status": "success",
+            "mac_address": resolved_arp_mac
+        }), 200
 
-    # 2. Attempt Scapy ARP Resolution
-    resolved_mac = resolve_mac_via_arp(target_ip)
-
-    # 3. Return Resolved MAC or Fallback from Query Parameters
-    if not resolved_mac:
-        resolved_mac = request.args.get('mac', 'FC:3F:FC:AF:92:F0')
-
+    # 3. STRICT FAILURE: Never return mock fallback data!
     return jsonify({
-        "status": "success",
-        "client_ip": target_ip,
-        "mac_address": resolved_mac
-    }), 200
+        "status": "error",
+        "message": "Real MAC address not provided by gateway router or ARP"
+    }), 400
 
 
 @app.route('/check-access', methods=['GET'])
@@ -72,17 +79,20 @@ def check_access():
     if not mac:
         return jsonify({"access": "denied", "reason": "MAC missing"}), 400
 
+    # Normalize incoming MAC address
+    normalized_mac = mac.strip().upper().replace('-', ':')
+
     try:
-        # Check Whitelisted Devices Table
-        dev_url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Devices?filterByFormula={{Mac Address}}='{mac}'"
+        # Step A: Check Whitelisted Devices Table
+        dev_url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Devices?filterByFormula={{Mac Address}}='{normalized_mac}'"
         dev_res = requests.get(dev_url, headers=AIRTABLE_HEADERS).json()
 
         if dev_res.get('records'):
             if dev_res['records'][0]['fields'].get('Whitelisted') is True:
                 return jsonify({"access": "granted", "type": "whitelisted_admin"}), 200
 
-        # Check Active Subscriptions Table
-        sub_url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Subscriptions?filterByFormula=AND({{Mac Address}}='{mac}', {{Status}}='ACTIVE')"
+        # Step B: Check Active Subscriptions Table
+        sub_url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Subscriptions?filterByFormula=AND({{Mac Address}}='{normalized_mac}', {{Status}}='ACTIVE')"
         sub_res = requests.get(sub_url, headers=AIRTABLE_HEADERS).json()
 
         if sub_res.get('records'):
@@ -103,10 +113,12 @@ def authorize():
     if not mac_address:
         return jsonify({"status": "error", "message": "mac_address required"}), 400
 
-    print(f"[AUTHORIZE SUCCESS] Hardware MAC {mac_address} unlocked for {duration} mins.")
+    normalized_mac = mac_address.strip().upper().replace('-', ':')
+
+    print(f"[AUTHORIZE SUCCESS] Hardware MAC {normalized_mac} unlocked for {duration} mins.")
     return jsonify({
         "status": "authorized",
-        "mac_address": mac_address,
+        "mac_address": normalized_mac,
         "duration_minutes": duration
     }), 200
 
