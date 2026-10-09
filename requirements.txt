@@ -1,2 +1,7 @@
-fastapi
-uvicorn
+Flask==3.0.2
+flask-cors==4.0.0
+gunicorn==21.2.0
+scapy==2.5.0
+psutil==5.9.8
+netaddr==1.2.1
+requests==2.31.0
